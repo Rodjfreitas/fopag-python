@@ -5,8 +5,27 @@ from datetime import datetime
 anoatual = datetime.now().year
 cadastro = []
 dados = {}
+id = 0
+cpfexiste = 'nao'
 while True:
+    dados['id'] = id
     dadosfpag.titulo('Cadastro de Funcionário')
+    # CPF do colaborador
+    while True:
+        cpfexiste = 'nao'
+        cpf = input('Digite o CPF: ').strip()
+        if cpf.isnumeric() == True and len(cpf) == 11:
+            cpf = int(cpf)
+            if id > 0:
+                for pos, valor in enumerate(cadastro):
+                    if cpf == valor['cpf']:
+                        cpfexiste = 'sim'
+            if cpfexiste == 'sim':
+                print('\033[1;41mCPF já existente.\033[m')
+                continue
+            dados['cpf'] = int(cpf)
+            break
+        print('\033[1;41mCPF Inválido.\033[m')
     # Nome do colaborador
     while True:
         nome = input('Nome Completo: ').strip().title()
@@ -56,10 +75,13 @@ while True:
 
     cadastro.append(dados.copy())
     dados.clear()
+
     # continuar novo cadastro
     while True:
         continuar = input('Cadastrar novo?[S/N]: ').strip().upper()[0]
         if continuar in 'SN':
+            if continuar == 'S':
+                id += 1
             break
         print('Inválido. Aceito apenas S(sim)/ N(não).')
     if continuar == 'N':
@@ -67,9 +89,9 @@ while True:
         break
 # Impressão de informações
 dadosfpag.titulo('Folha de Pagamento')
-print(f'{"No.":<3}{"Nome":25}{"Sexo":8}{"Nasc.":<10}{"Idade":<10}{"Salário":12}{"INSS":10}{"FGTS":10}{"IRRF":10}{"VT":10}{"Líquido":12}')
+print(f'{"ID":<3}{"Nome":25}{"CPF":<13}{"Sexo":6}{"Nasc.":<7}{"Idade":<8}{"Salário":12}{"INSS":10}{"FGTS":10}{"IRRF":10}{"VT":10}{"Líquido":12}')
 for pos, valor in enumerate(cadastro):
-    print(f'{pos:<3}{valor["nome"]:25}{valor["sexo"]:8}{valor["nascimento"]:<10}{valor["idade"]:<10}{fpag.moeda(valor["salario"]):12}{fpag.moeda(valor["inss"]):10}{fpag.moeda(valor["fgts"]):10}{fpag.moeda(valor["irrf"]):10}{fpag.moeda(valor["vt"]):10}{fpag.moeda(valor["saliq"]):12}')
+    print(f'{valor["id"]:<3}{valor["nome"]:25}{valor["cpf"]:<13}{valor["sexo"]:6}{valor["nascimento"]:<7}{valor["idade"]:<8}{fpag.moeda(valor["salario"]):12}{fpag.moeda(valor["inss"]):10}{fpag.moeda(valor["fgts"]):10}{fpag.moeda(valor["irrf"]):10}{fpag.moeda(valor["vt"]):10}{fpag.moeda(valor["saliq"]):12}')
 dadosfpag.linha()
 
 # Gravando informações no excel
@@ -78,7 +100,7 @@ while True:
         '\nDeseja salvar informações em um arquivo?[S/N]').strip().upper()[0]
     if salvar in 'SN':
         if salvar == 'S':
-            df = pd.DataFrame(cadastro, columns=['nome', 'sexo', 'nascimento',
+            df = pd.DataFrame(cadastro, columns=['id', 'nome', 'cpf', 'sexo', 'nascimento',
                                                  'idade', 'salario', 'inss', 'fgts', 'irrf', 'vt', 'saliq'])
             df.to_excel('Relatório Fopag.xlsx',
                         sheet_name='Folha de pagamento', index=False)
