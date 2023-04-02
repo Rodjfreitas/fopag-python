@@ -1,19 +1,17 @@
 def moeda(valor):
-    return f'R${valor:.2f}'
+    return f'R$ {valor:.2f}'
 
 
-def fgtscalc(salario, formatar=True):
+def fgtscalc(salario):
     """
     --> Função para calculo de FGTS
     :param salario: valor do salário bruto
     :return: retorna o valor de dedução do fgts pela empresa
     """
-    if formatar:
-        return moeda(salario * 0.08)
     return salario * 0.08
 
 
-def insscalc(salario, formatar=True):
+def insscalc(salario):
     """
     --> Função para calculo de INSS
     :param salario: valor do salário bruto
@@ -36,13 +34,11 @@ def insscalc(salario, formatar=True):
         inssAmount += (7507.49 - 3856.95) * 0.14
     else:
         inssAmount += 0
-    if formatar:
-        return moeda(inssAmount)
     return inssAmount
 
 
-def irrfcalc(salario, formatar=True):
-    baseirrf = salario - insscalc(salario, formatar=False)
+def irrfcalc(salario):
+    baseirrf = salario - insscalc(salario)
     valorirrf = 0
     if baseirrf <= 1903.98:
         valorirrf += 0
@@ -54,12 +50,10 @@ def irrfcalc(salario, formatar=True):
         valorirrf += baseirrf * 0.225 - 636.13
     else:
         valorirrf += baseirrf * 0.275 - 869.36
-    if formatar:
-        return moeda(valorirrf)
     return valorirrf
 
 
-def vtcalc(salario, passagem, formatar=True):
+def vtcalc(salario, passagem):
     valorpassagem = (passagem * 2) * 22
     mensal = salario * 0.06
     aplicavel = 0
@@ -67,13 +61,9 @@ def vtcalc(salario, passagem, formatar=True):
         aplicavel = valorpassagem
     else:
         aplicavel = mensal
-    if formatar:
-        return moeda(aplicavel)
     return aplicavel
 
 
-def salliq(salario, passagem, formatar=True):
-    valor = salario - insscalc(salario, formatar=False) - irrfcalc(salario, formatar=False) - vtcalc(salario, passagem, formatar=False)
-    if formatar:
-        return moeda(valor)
+def salliq(salario, passagem):
+    valor = salario - insscalc(salario) - irrfcalc(salario) - vtcalc(salario, passagem)
     return valor
