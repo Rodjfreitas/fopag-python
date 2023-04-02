@@ -5,10 +5,10 @@ from datetime import datetime
 anoatual = datetime.now().year
 cadastro = []
 dados = {}
-id = 0
+ide = 0
 cpfexiste = 'nao'
 while True:
-    dados['id'] = id
+    dados['id'] = ide
     dadosfpag.titulo('Cadastro de Funcionário')
 
     # CPF do colaborador
@@ -17,7 +17,7 @@ while True:
         cpf = input('Digite o CPF: ').strip()
         if cpf.isnumeric() == True and len(cpf) == 11:
             cpf = str(cpf)
-            if id > 0:
+            if ide > 0:
                 for pos, valor in enumerate(cadastro):
                     if cpf == valor['cpf']:
                         cpfexiste = 'sim'
@@ -82,7 +82,7 @@ while True:
 
     # continuar novo cadastro
     continuar = dadosfpag.questionyesno('Cadastrar novo?')
-    id += 1
+    ide += 1
     if continuar == 'N':
         dadosfpag.linha()
         break
@@ -95,17 +95,12 @@ for pos, valor in enumerate(cadastro):
 dadosfpag.linha()
 
 # Gravando informações no excel
-while True:
-    salvar = input(
-        '\nDeseja salvar informações em um arquivo?[S/N]').strip().upper()[0]
-    if salvar in 'SN':
-        if salvar == 'S':
-            df = pd.DataFrame(cadastro, columns=['id', 'nome', 'cpf', 'sexo', 'nascimento',
-                                                 'idade', 'salario', 'inss', 'fgts', 'irrf', 'vt', 'saliq'])
-            df.to_excel('Relatório Fopag.xlsx',
-                        sheet_name='Folha de pagamento', index=False)
-            print('\033[1;42mArquivo Salvo\033[m')
-        else:
-            print('\033[1;41mArquivo não Salvo\033[m')
-        break
-    print('Valor Inválido. Digite S ou N para Sim/Não.')
+salvar = dadosfpag.questionyesno('Salvar arquivo?')
+if salvar == 'S':
+    df = pd.DataFrame(cadastro, columns=['ide', 'nome', 'cpf', 'sexo', 'nascimento',
+                                         'idade', 'salario', 'inss', 'fgts', 'irrf', 'vt', 'saliq'])
+    df.to_excel('Relatório Fopag.xlsx',
+                sheet_name='Folha de pagamento', index=False)
+    print('\033[1;42mArquivo Salvo\033[m')
+else:
+    print('\033[1;41mArquivo não Salvo\033[m')
