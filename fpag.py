@@ -64,6 +64,10 @@ def vtcalc(salario, passagem):
     return aplicavel
 
 
-def salliq(salario, passagem):
-    valor = salario - insscalc(salario) - irrfcalc(salario) - vtcalc(salario, passagem)
+def vacalc(valorva):
+    return (valorva * 22) * 0.20
+
+
+def salliq(salario, passagem, valorva):
+    valor = salario - insscalc(salario) - irrfcalc(salario) - vtcalc(salario, passagem) - vacalc(valorva)
     return valor

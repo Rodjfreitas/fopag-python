@@ -2,13 +2,15 @@ import fpag
 import dadosfpag
 import pandas as pd
 from datetime import datetime
+
 anoatual = datetime.now().year
 cadastro = []
 dados = {}
-ide = 0
+codigofunc = 0
 cpfexiste = 'nao'
+
 while True:
-    dados['id'] = ide
+    dados['id'] = codigofunc
     dadosfpag.titulo('Cadastro de Funcionário')
 
     # CPF do colaborador
@@ -17,7 +19,7 @@ while True:
         cpf = input('Digite o CPF: ').strip()
         if cpf.isnumeric() == True and len(cpf) == 11:
             cpf = str(cpf)
-            if ide > 0:
+            if codigofunc > 0:
                 for pos, valor in enumerate(cadastro):
                     if cpf == valor['cpf']:
                         cpfexiste = 'sim'
@@ -40,7 +42,7 @@ while True:
     while True:
         nascimento = input('Ano de Nascimento: ')
         if len(nascimento) == 4 and int(nascimento) <= anoatual:
-            dados['nascimento'] = nascimento
+            dados['nascimento'] = int(nascimento)
             dados['idade'] = dadosfpag.idade(int(nascimento))
             break
         print('Inválido. digite o ano completo, ex: 1990.')
@@ -69,12 +71,21 @@ while True:
     else:
         valorvt = 0
 
+    # Vale Alimentação
+    alimentacao = dadosfpag.questionyesno('Possui Vale Alimentação/ Refeição?')
+    if alimentacao == 'S':
+        valorva = float(input('Digite o valor diário: '))
+    else:
+        valorva = 0
+
     # Calculos
     dados['inss'] = fpag.insscalc(salario)
     dados['fgts'] = fpag.fgtscalc(salario)
     dados['irrf'] = fpag.irrfcalc(salario)
+    dados['passagem'] = valorvt
     dados['vt'] = fpag.vtcalc(salario, valorvt)
-    dados['saliq'] = fpag.salliq(salario, valorvt)
+    dados['pat'] = fpag.vacalc(valorva)
+    dados['saliq'] = fpag.salliq(salario, valorvt, valorva)
 
     # Adicionando dicionário a lista e limpando para próximo registro
     cadastro.append(dados.copy())
@@ -82,7 +93,7 @@ while True:
 
     # continuar novo cadastro
     continuar = dadosfpag.questionyesno('Cadastrar novo?')
-    ide += 1
+    codigofunc += 1
     if continuar == 'N':
         dadosfpag.linha()
         break
@@ -97,8 +108,8 @@ dadosfpag.linha()
 # Gravando informações no excel
 salvar = dadosfpag.questionyesno('Salvar arquivo?')
 if salvar == 'S':
-    df = pd.DataFrame(cadastro, columns=['ide', 'nome', 'cpf', 'sexo', 'nascimento',
-                                         'idade', 'salario', 'inss', 'fgts', 'irrf', 'vt', 'saliq'])
+    df = pd.DataFrame(cadastro, columns=['id', 'nome', 'cpf', 'sexo', 'nascimento',
+                                         'idade', 'salario', 'inss', 'fgts', 'irrf', 'passagem', 'vt', 'pat', 'saliq'])
     df.to_excel('Relatório Fopag.xlsx',
                 sheet_name='Folha de pagamento', index=False)
     print('\033[1;42mArquivo Salvo\033[m')
