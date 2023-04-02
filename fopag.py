@@ -1,5 +1,6 @@
 import fpag
 import dadosfpag
+import pandas as pd
 from datetime import datetime
 anoatual = datetime.now().year
 cadastro = []
@@ -62,6 +63,13 @@ while True:
         print('Inválido. Aceito apenas S(sim)/ N(não).')
     if continuar == 'N':
         break
+# Impressão de informações
 print(f'{"No.":<3}{"Nome":25}{"Sexo":8}{"Nasc.":<10}{"Idade":<10}{"Salário":12}{"INSS":10}{"FGTS":10}{"IRRF":10}{"VT":10}{"Líquido":12}')
 for pos, valor in enumerate(cadastro):
     print(f'{pos:<3}{valor["nome"]:25}{valor["sexo"]:8}{valor["nascimento"]:<10}{valor["idade"]:<10}{valor["salario"]:12}{valor["inss"]:10}{valor["fgts"]:10}{valor["irrf"]:10}{valor["vt"]:10}{valor["saliq"]:12}')
+
+# Gravando informações no excel
+df = pd.DataFrame(cadastro, columns=['nome', 'sexo', 'nascimento',
+                  'idade', 'salario', 'inss', 'fgts', 'irrf', 'vt', 'saliq'])
+
+df.to_excel('Relatório.xlsx', sheet_name='folha de pagamento', index=False)
