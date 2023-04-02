@@ -1,4 +1,9 @@
 def moeda(valor):
+    """
+    --> Função para formatação de numeros em moeda
+    :param valor: valor numérico que deseja formatar
+    :return: retorna o valor com formatação em moeda BRL do valor.
+    """
     return f'R$ {valor:.2f}'
 
 
@@ -38,6 +43,11 @@ def insscalc(salario):
 
 
 def irrfcalc(salario):
+    """
+    --> Função para calculo de Imposto de Renda Retido na fonte
+    :param salario: valor do salário bruto
+    :return: retorna o valor de dedução do imposto de renda na folha de pagamento
+    """
     baseirrf = salario - insscalc(salario)
     valorirrf = 0
     if baseirrf <= 1903.98:
@@ -54,6 +64,12 @@ def irrfcalc(salario):
 
 
 def vtcalc(salario, passagem):
+    """
+    --> Função para calculo de desconto vale transporte
+    :param salario: valor do salário bruto
+    :param passagem: valor da passagem (considera apenas ida)
+    :return: retorna o valor de dedução do vale transporte na folha de pagamento
+    """
     valorpassagem = (passagem * 2) * 22
     mensal = salario * 0.06
     aplicavel = 0
@@ -65,9 +81,21 @@ def vtcalc(salario, passagem):
 
 
 def vacalc(valorva):
+    """
+    --> Função para calculo de desconto de PAT
+    :param valorva: valor do ticket diário
+    :return: retorna o valor de dedução do pat na folha de pagamento
+    """
     return (valorva * 22) * 0.20
 
 
 def salliq(salario, passagem, valorva):
+    """
+    --> Função para calculo de salário Líquido
+    :param salario: valor do salário bruto
+    :param passagem: valor da passagem (considera apenas ida)
+    :param valorva: valor do ticket diário
+    :return: retorna o valor líquido do salário, já com as deduções.
+    """
     valor = salario - insscalc(salario) - irrfcalc(salario) - vtcalc(salario, passagem) - vacalc(valorva)
     return valor
